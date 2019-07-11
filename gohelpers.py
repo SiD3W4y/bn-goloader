@@ -48,8 +48,8 @@ class GoHelper(bn.plugin.BackgroundTaskThread):
 
     def read_cstring(self, address):
         self.br.seek(address)
-        st = ""
-        while "\x00" not in st and len(st) < 0x1000:
+        st = b""
+        while b"\x00" not in st and len(st) < 0x1000:
             x = self.br.read(255)
             if x:
                 st += x
@@ -57,7 +57,7 @@ class GoHelper(bn.plugin.BackgroundTaskThread):
             else:
                 break
             log_debug("{!r}".format(st))
-        return st
+        return st[:st.find(b"\x00")].decode("UTF-8")
 
     def get_pointer_at_virt(self, addr, size=None):
         x = self.bv.read(addr, self.ptr_size)
